@@ -1,24 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  useState,
+  useCallback
+} from 'react';
+import {
+  ThemeProvider,
+  createGlobalStyle
+} from 'styled-components';
+import theme from './config/theme';
+import DraggableCalcutator from './components/calculator/draggableCalculator.component';
+import Intro from './components/intro/intro.component';
+import { Layout } from './components/UI';
+
+const GlobalStyle = createGlobalStyle`
+  html {
+    font-size:62.5%;
+  }
+  body {
+    background-color: #f3f5f7;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.4rem;
+  }
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+`
 
 function App() {
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleCalculatorClick = useCallback(() => {
+    setShowCalculator(prevShow => !prevShow);
+    setPosition({ x: 0, y: 0 });
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <Layout className="App">
+        <Intro
+          show={showCalculator}
+          handleCalculatorClick={handleCalculatorClick}
+        />
+        <DraggableCalcutator
+          show={showCalculator}
+          position={position}
+          setPosition={setPosition}
+          handleCalculatorClick={handleCalculatorClick}
+        />
+      </Layout>
+    </ThemeProvider>
   );
 }
 
